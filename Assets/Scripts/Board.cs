@@ -8,11 +8,14 @@ public class Board : MonoBehaviour
     public int width;
     public int height;
     public GameObject tilePrefab;
+    public GameObject[] bubbles;
     private BackgroundTile[,] allTiles;
+    public GameObject[,] allBubble;
     // Start is called before the first frame update
     void Start()
     {
         allTiles = new BackgroundTile[width, height];
+        allBubble = new GameObject[width, height];
         Setup();
     }
 
@@ -27,8 +30,13 @@ public class Board : MonoBehaviour
                 BackTile.transform.parent = this.transform;
                 // lets also get the postions for the BackTile for sanity Checks
                 BackTile.name = "(" + row + " ," + column + ")";
-
+                int toUse = Random.Range(0, bubbles.Length);
+                GameObject bubble = Instantiate(bubbles[toUse], tempPos, Quaternion.identity);
+                bubble.transform.parent = this.transform; // bubble is the child of the backtile
+                bubble.name = "(" + row + " ," + column + ")"; // sanity check
+                allBubble[row, column] = bubble;
             }
         }
     }
 }
+
