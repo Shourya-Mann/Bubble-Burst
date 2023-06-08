@@ -101,6 +101,20 @@ public class Bubbles : MonoBehaviour
 
         swipeAngle = Mathf.Atan2(currentTouchPos.y - firstTouchPos.y, currentTouchPos.x - firstTouchPos.x);
     }
+
+    bool ColorCheck(string colTag)
+    {
+        // bubbleObject = bubble at row, column
+        colTag = bubbleObject.tag;
+        if (colTag == "red-bub")
+        {
+            return true; // bubble can be broken
+        }
+        else
+        {
+            return false; // bubble can not be broken
+        }
+    }
 }
 
 
