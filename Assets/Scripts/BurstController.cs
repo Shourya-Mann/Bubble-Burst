@@ -16,6 +16,7 @@ public class BurstController : MonoBehaviour
 
     // Update is called once per frame
     void Update()
+        
     {
        
     }

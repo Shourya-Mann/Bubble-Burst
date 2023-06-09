@@ -9,9 +9,11 @@ public class Bubbles : MonoBehaviour
     private Vector2 finalTouchPos;
     private Vector2 currentTouchPos;
     private Vector2 prevTouchPos;
-    private RaycastHit2D hit; // hit is the variable to store what bubble was clicked upon
+    private RaycastHit2D hit; // hit1 is the variable to store what bubble was clicked upon
+    //private RaycastHit2D hit; // hit is the variable to store what bubble is the clicked mouse dragged over
     public float swipeAngle = 0;
     private Board board;
+    bool canBreakBubble;
     //private bool isMousePressed = false; // boolean flag to check if moue is pressed (we dont want bubbles bursting randomly by hovering the mouse
     // Start is called before the first frame update
     void Start()
@@ -44,12 +46,13 @@ public class Bubbles : MonoBehaviour
 
 
         //check for color correctness
-        bool canBreakBubble = ColorCheck(hit.collider.gameObject);
+        canBreakBubble = ColorCheck(hit.collider.gameObject);
         // if right bubble -----> break ----> initiate haptic----> generate points
         // else ------> end interaction state --------> enter board refill state
         if (canBreakBubble)
         {
             board.BreakBubble(firstTouchPos.x, firstTouchPos.y);
+            
         }
         else
         {
@@ -61,8 +64,8 @@ public class Bubbles : MonoBehaviour
 
         prevTouchPos = firstTouchPos;
 
-        // NESTING ONMOUSE ENTER for now
-        OnMouseEnter();
+        // NESTING ONMOUSE ENTER for now doing so creates a null reference error couse the hit value overwrites initially. 
+        //OnMouseEnter();
 
         
 
@@ -74,6 +77,8 @@ public class Bubbles : MonoBehaviour
         {
             currentTouchPos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
 
+
+
             // check angle
             // if angle = 0, 90, 180, 270 --------> go to color check and
             // if right bubble -----> break ----> initiate haptic----> generate points
@@ -81,16 +86,26 @@ public class Bubbles : MonoBehaviour
             // else --------> end interaction state --------> enter board refill state
 
             //NOTE: for color check, if true points increase for longer drag. (need a counter for nuber of bubbles burst in combo)
-            bool canBreakBubble = ColorCheck(hit.collider.gameObject);
+
+            // board.BreakBubble(currentTouchPos.x, currentTouchPos.y);
+
+            //check for color correctness
+            hit = Physics2D.Raycast(currentTouchPos, Vector2.zero);
+            canBreakBubble = ColorCheck(hit.collider.gameObject);
+
             if (canBreakBubble)
             {
-                board.BreakBubble(firstTouchPos.x, firstTouchPos.y);
+                board.BreakBubble(currentTouchPos.x, currentTouchPos.y);
+
             }
             else
             {
                 Debug.Log("Bubble cannot be broken!");
             }
-
+            //board.BreakBubble(currentTouchPos.x, currentTouchPos.y);
+                //OnMouseEnter();
+            
+           
 
 
 
@@ -125,7 +140,7 @@ public class Bubbles : MonoBehaviour
         string colTag;
         // bubbleObject = bubble at row, column
         colTag = bub_obj.tag;
-        if (colTag == "red-bub")
+        if (colTag == "blue-bub")
         {
             return true; // bubble can be broken
         }
