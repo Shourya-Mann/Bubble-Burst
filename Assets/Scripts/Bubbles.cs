@@ -135,7 +135,7 @@ public class Bubbles : MonoBehaviour
         //swipeAngle = Mathf.Atan2(currentTouchPos.y - firstTouchPos.y, currentTouchPos.x - firstTouchPos.x);
     }
 
-    bool ColorCheck(GameObject bub_obj)
+    public bool ColorCheck(GameObject bub_obj)
     {
         string colTag;
         // bubbleObject = bubble at row, column
