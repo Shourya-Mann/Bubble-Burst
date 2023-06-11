@@ -12,9 +12,12 @@ public class Bubbles : MonoBehaviour
     private RaycastHit2D hit; // hit1 is the variable to store what bubble was clicked upon
     //private RaycastHit2D hit; // hit is the variable to store what bubble is the clicked mouse dragged over
     public float swipeAngle = 0;
-    private Board board;
     bool canBreakBubble;
     //private bool isMousePressed = false; // boolean flag to check if moue is pressed (we dont want bubbles bursting randomly by hovering the mouse
+    
+    private Board board; // calling the board script
+    public Bubbles bubblesScript;// calling the Color Change Script
+
     // Start is called before the first frame update
     void Start()
     {
@@ -137,10 +140,12 @@ public class Bubbles : MonoBehaviour
 
     public bool ColorCheck(GameObject bub_obj)
     {
-        string colTag;
+        string clickedTag;
+        //string currentTag;
         // bubbleObject = bubble at row, column
-        colTag = bub_obj.tag;
-        if (colTag == "blue-bub")
+        clickedTag = bub_obj.tag;
+        
+        if (clickedTag == "red-bub")
         {
             return true; // bubble can be broken
         }
