@@ -66,7 +66,45 @@ public class ColorChange : MonoBehaviour
         bubble.SetActive(true);
     }
     */
-    
+
+    /*
+        public void ChangeColor()
+        {
+            // Setting up the decider bubble
+            Vector2 pos = new Vector2(2, 8.5f);
+            GameObject decider = Instantiate(directorBubble, pos, Quaternion.identity);
+            decider.transform.parent = transform;
+
+            // Randomly select a new colored bubble
+            GameObject newColorBubble;
+            do
+            {
+                int newRandomColor = Random.Range(0, coloredBubbles.Length);
+                newColorBubble = coloredBubbles[newRandomColor];
+            } while (newColorBubble == currentColorBubble);
+
+            // Reuse the existing colored bubble or instantiate a new one if not already present
+            GameObject bubble = currentColorBubble;
+            if (bubble == null || bubble.GetComponent<SpriteRenderer>().sprite != newColorBubble.GetComponent<SpriteRenderer>().sprite)
+            {
+                if (bubble != null)
+                {
+                    Destroy(bubble); // Destroy the previous bubble if it exists
+                }
+
+                bubble = Instantiate(newColorBubble, pos, Quaternion.identity);
+                bubble.transform.parent = decider.transform;
+            }
+            else
+            {
+                bubble.transform.parent = decider.transform;
+                bubble.SetActive(true);
+            }
+
+            // Set the new colored bubble as the current one
+            currentColorBubble = bubble;
+        }
+    */
 
     public void ChangeColor()
     {
@@ -91,7 +129,7 @@ public class ColorChange : MonoBehaviour
             {
                 Destroy(bubble); // Destroy the previous bubble if it exists
             }
-            //bubble is the child of the large director bubble. 
+
             bubble = Instantiate(newColorBubble, pos, Quaternion.identity);
             bubble.transform.parent = decider.transform;
         }

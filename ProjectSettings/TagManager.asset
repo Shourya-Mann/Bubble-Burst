@@ -8,6 +8,7 @@ TagManager:
   - red-bub
   - yellow-bub
   - green-bub
+  - Director
   layers:
   - Default
   - TransparentFX
@@ -44,6 +45,9 @@ TagManager:
   m_SortingLayers:
   - name: Default
     uniqueID: 0
+    locked: 0
+  - name: Director
+    uniqueID: 1026311841
     locked: 0
   - name: Burst-Layer
     uniqueID: 2531630165
