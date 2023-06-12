@@ -10,6 +10,7 @@ public class ColorChange : MonoBehaviour
     public GameObject directorBubble;
     public GameObject[] coloredBubbles;
     private GameObject currentColorBubble;
+    //public GameObject enforcerBubble;// will call this in Bubbles script for color checks
     private GameObject decider;
     private Vector2 pos;
     int randomColor;
@@ -24,7 +25,7 @@ public class ColorChange : MonoBehaviour
         pos = new Vector2(2, 8.5f);
         decider = Instantiate(directorBubble, pos, Quaternion.identity);
         decider.transform.parent = transform;
-        InvokeRepeating("ChangeColor", 0f, 0.5f);
+        InvokeRepeating("ChangeColor", 0f, 5f);
     }
 
     // Update is called once per frame
@@ -32,51 +33,6 @@ public class ColorChange : MonoBehaviour
     {
         
     }
-    /*
-    public void ChangeColor()
-    {
-
-        //setting up the decider bubble
-        Vector2 pos = new Vector2(2, 8.5f);
-        GameObject decider = Instantiate(directorBubble, pos, Quaternion.identity);
-        decider.transform.parent = transform;
-        //deactivate the current color bubble, if any 
-
-        if (currentColorBubble != null)
-        {
-            currentColorBubble = null;
-            
-        }
-        
-
-
-        //randomly select a new colored bubble
-        // dowhile loop to prevent the same color repeating
-        
-        //int prevColor = -1;
-        if (coloredBubbles.Length == 1)
-        {
-            randomColor = 0;
-        }
-        else
-        {
-            do
-            {
-                randomColor = Random.Range(0, coloredBubbles.Length);
-            } while (coloredBubbles[randomColor] == currentColorBubble);
-        }
-
-        
-
-        //setting the colored bubbles to be the children of the big decider bubble
-        currentColorBubble = coloredBubbles[randomColor];
-        GameObject bubble = Instantiate(coloredBubbles[randomColor], pos, Quaternion.identity);
-        bubble.transform.parent = decider.transform;
-        //activate the new colored bubble
-        bubble.SetActive(true);
-    }
-    */
-
     
 
     public void ChangeColor()
@@ -116,5 +72,22 @@ public class ColorChange : MonoBehaviour
         currentColorBubble = bubble;
     }
 
+    public bool ColorCheck(GameObject bub_obj)
+    {
+        string clickedTag;
+        //string currentTag;
+        // bubbleObject = bubble at row, column
+        clickedTag = bub_obj.tag;
+        // string canBreak = Checker.currentColorBubble.tag;
+
+        if (clickedTag == currentColorBubble?.tag)
+        {
+            return true; // bubble can be broken
+        }
+        else
+        {
+            return false; // bubble can not be broken
+        }
+    }
 
 }

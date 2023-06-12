@@ -16,12 +16,22 @@ public class Bubbles : MonoBehaviour
     //private bool isMousePressed = false; // boolean flag to check if moue is pressed (we dont want bubbles bursting randomly by hovering the mouse
     
     private Board board; // calling the board script
-    public Bubbles bubblesScript;// calling the Color Change Script
+    public ColorChange colorChangeScript;// calling the Color Change Script
+    public List<ColorChange> colorChangeScripts;
 
     // Start is called before the first frame update
     void Start()
     {
         board = FindObjectOfType<Board>(); // find the Board script in the scene
+        //olorChangeScript = GetComponent<ColorChange>();
+        colorChangeScripts = new List<ColorChange>();
+
+        // Find all GameObjects with the ColorChange script and add their references to the list
+        ColorChange[] colorChangeObjects = FindObjectsOfType<ColorChange>();
+        foreach (ColorChange colorChangeObject in colorChangeObjects)
+        {
+            colorChangeScripts.Add(colorChangeObject);
+        }
     }
 
     // Update is called once per frame
@@ -49,7 +59,17 @@ public class Bubbles : MonoBehaviour
 
 
         //check for color correctness
-        canBreakBubble = ColorCheck(hit.collider.gameObject);
+       
+        foreach (ColorChange colorChangeScript in colorChangeScripts)// cause multiple bubbles with colorChange script attached
+        {
+            if (colorChangeScript.ColorCheck(hit.collider.gameObject))
+            {
+                canBreakBubble = true;
+                break;
+            }
+        }
+
+
         // if right bubble -----> break ----> initiate haptic----> generate points
         // else ------> end interaction state --------> enter board refill state
         if (canBreakBubble)
@@ -94,7 +114,15 @@ public class Bubbles : MonoBehaviour
 
             //check for color correctness
             hit = Physics2D.Raycast(currentTouchPos, Vector2.zero);
-            canBreakBubble = ColorCheck(hit.collider.gameObject);
+
+            foreach (ColorChange colorChangeScript in colorChangeScripts)// cause multiple bubbles with colorChange script attached
+            {
+                if (colorChangeScript.ColorCheck(hit.collider.gameObject))
+                {
+                    canBreakBubble = true;
+                    break;
+                }
+            }
 
             if (canBreakBubble)
             {
@@ -138,22 +166,7 @@ public class Bubbles : MonoBehaviour
         //swipeAngle = Mathf.Atan2(currentTouchPos.y - firstTouchPos.y, currentTouchPos.x - firstTouchPos.x);
     }
 
-    public bool ColorCheck(GameObject bub_obj)
-    {
-        string clickedTag;
-        //string currentTag;
-        // bubbleObject = bubble at row, column
-        clickedTag = bub_obj.tag;
-        
-        if (clickedTag == "red-bub")
-        {
-            return true; // bubble can be broken
-        }
-        else
-        {
-            return false; // bubble can not be broken
-        }
-    }
+
 }
 
 
