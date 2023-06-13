@@ -55,9 +55,34 @@ public class Board : MonoBehaviour
         Destroy(bubbleObject);
         //bubbleObject = null;
         Debug.Log("Bubble Destroyed!");
+
+        // Start the coroutine to refill the board
+        StartCoroutine(RefillBoardCoroutine());
     }
 
-    
+
+    private void RefillSlot(int column, int row)
+    {
+        // Instantiate a new bubble object and assign it to the appropriate slot
+        int toUse = Random.Range(0, bubbles.Length);
+        GameObject newBubble = Instantiate(bubbles[toUse], GetPosition(column, row), Quaternion.identity);
+        allBubble[column, row] = newBubble;
+    }
+
+    private Vector2 GetPosition(int column, int row)
+    {
+        // Assuming each bubble has a fixed size of 1 unit
+        float bubbleSize = 1f;
+        Vector2 originPosition = Vector2.zero; // Set the origin position of your grid
+
+        float x = originPosition.x + column * bubbleSize;
+        float y = originPosition.y + row * bubbleSize;
+        
+
+        return new Vector2(x, y);
+    }
+
+
     private IEnumerator RefillBoardCoroutine()
     {
         // Wait for a short delay (optional, for visual effect)
