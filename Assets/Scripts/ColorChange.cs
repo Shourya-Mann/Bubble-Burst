@@ -25,7 +25,7 @@ public class ColorChange : MonoBehaviour
         pos = new Vector2(2, 8.5f);
         decider = Instantiate(directorBubble, pos, Quaternion.identity);
         decider.transform.parent = transform;
-        InvokeRepeating("ChangeColor", 0f, 5f);
+        InvokeRepeating("ChangeColor", 0f, 20f);
     }
 
     // Update is called once per frame

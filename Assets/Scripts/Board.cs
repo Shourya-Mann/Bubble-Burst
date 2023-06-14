@@ -26,25 +26,32 @@ public class Board : MonoBehaviour
         Setup();
     }
 
-    private void Setup()
+    
+private void Setup()
+{
+    for (int column = 0; column < width; column++)
     {
-        for (int row = 0; row < width; row++)
+        for (int row = 0; row < height; row++)
         {
-            for (int column = 0; column < height; column++)
-            {
-                Vector2 tempPos = new Vector2(row, column);
-                GameObject backTile = Instantiate(tilePrefab, tempPos, Quaternion.identity);
-                backTile.transform.parent = transform;
-                backTile.name = "(" + row + ", " + column + ")";
+            Vector2 tempPos = new Vector2(column, row);
+            GameObject backTile = Instantiate(tilePrefab, tempPos, Quaternion.identity);
+            backTile.transform.parent = transform;
+            backTile.name = "(" + column + ", " + row + ")";
 
-                int toUse = Random.Range(0, bubbles.Length);
-                GameObject bubble = Instantiate(bubbles[toUse], tempPos, Quaternion.identity);
-                bubble.transform.parent = backTile.transform;
-                bubble.name = "(" + row + ", " + column + ")";
-                allBubble[row, column] = bubble;
-            }
+            int toUse = Random.Range(0, bubbles.Length);
+            GameObject bubble = Instantiate(bubbles[toUse], tempPos, Quaternion.identity);
+            bubble.transform.parent = backTile.transform;
+            bubble.name = "(" + column + ", " + row + ")";
+            allBubble[column, row] = bubble;
         }
     }
+}
+
+    
+
+
+
+
 
     public void BreakBubble(float column, float row)
     {
@@ -65,7 +72,7 @@ public class Board : MonoBehaviour
     {
         // Instantiate a new bubble object and assign it to the appropriate slot
         int toUse = Random.Range(0, bubbles.Length);
-        GameObject newBubble = Instantiate(bubbles[toUse], GetPosition(column, row), Quaternion.identity);
+        GameObject newBubble = Instantiate(bubbles[toUse], GetPosition(column, row), Quaternion.identity); // dont flip column row
         allBubble[column, row] = newBubble;
     }
 
@@ -82,26 +89,27 @@ public class Board : MonoBehaviour
         return new Vector2(x, y);
     }
 
-
-    private IEnumerator RefillBoardCoroutine()
+    
+    
+    private IEnumerator RefillBoardCoroutine() // note all the for loops are reversed rn
     {
         // Wait for a short delay (optional, for visual effect)
-        yield return new WaitForSeconds(0.5f);
+        yield return new WaitForSeconds(2f);
 
         // Loop through each column
-        for (int columnIndex = 0; columnIndex < height; columnIndex++)
+        for (int columnIndex = width-1; columnIndex >=0; columnIndex--) // Loop over the columns
         {
             // Create a list to store the bubbles that need to move down
             List<GameObject> bubblesToMove = new List<GameObject>();
 
             // Loop through each row from bottom to top
-            for (int rowIndex = 0; rowIndex < width; rowIndex++)
+            for (int rowIndex = height-1; rowIndex >=0; rowIndex--) // Loop over the rows
             {
                 // Check if the current slot is empty
                 if (allBubble[columnIndex, rowIndex] == null)
                 {
                     // Add the bubbles above the empty slot to the list
-                    for (int i = rowIndex + 1; i < width; i++)
+                    for (int i = columnIndex; i >=0; i--)
                     {
                         GameObject bubble = allBubble[columnIndex, i];
                         if (bubble != null)
@@ -114,27 +122,31 @@ public class Board : MonoBehaviour
             }
 
             // Move the bubbles down
-            for (int i = 0; i < bubblesToMove.Count; i++)
+            for (int i = bubblesToMove.Count-1; i >=0; i--)
             {
-                int targetRow = width - 1 - i;
+                int targetRow = height-1-i; // Calculate the target row correctly
                 allBubble[columnIndex, targetRow] = bubblesToMove[i];
                 bubblesToMove[i].transform.position = GetPosition(columnIndex, targetRow);
             }
 
             // Refill the remaining empty slots with new bubbles
-            for (int rowIndex = 0; rowIndex < width; rowIndex++)
+            for (int rowIndex = height-1; rowIndex >=0; rowIndex--) // Loop over the rows
             {
                 if (allBubble[columnIndex, rowIndex] == null)
                 {
+                    yield return new WaitForSeconds(0.5f); // keep this to check how the board is being refilled
                     RefillSlot(columnIndex, rowIndex);
                 }
             }
         }
 
         // Optional: Wait for a short delay before enabling player input
-        yield return new WaitForSeconds(0.5f);
+        yield return new WaitForSeconds(2f);
 
         // Enable player input or perform other necessary actions
     }
-    
+
+
+
+
 }
