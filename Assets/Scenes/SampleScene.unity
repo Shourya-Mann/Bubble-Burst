@@ -292,6 +292,7 @@ MonoBehaviour:
   - {fileID: 8383322365876661121, guid: df8e23a312dce434bb47c924eae0a150, type: 3}
   - {fileID: 5369280818820190365, guid: c0f0fccee214089428d1d816dd76e9b3, type: 3}
   - {fileID: 3427080494619675856, guid: 02af28cbc988cf4438c7406672e5fc49, type: 3}
+  bubblesScript: {fileID: 0}
 --- !u!4 &875699174
 Transform:
   m_ObjectHideFlags: 0

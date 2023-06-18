@@ -70,11 +70,14 @@ private void Setup()
 
     private void RefillSlot(int column, int row)
     {
-        // Instantiate a new bubble object and assign it to the appropriate slot
-        int toUse = Random.Range(0, bubbles.Length);
-        GameObject newBubble = Instantiate(bubbles[toUse], GetPosition(column, row), Quaternion.identity); // dont flip column row
-        allBubble[column, row] = newBubble;
+        if (allBubble[column, row] == null) // Add null check to prevent overwriting existing bubbles
+        {
+            int toUse = Random.Range(0, bubbles.Length);
+            GameObject newBubble = Instantiate(bubbles[toUse], GetPosition(column, row), Quaternion.identity);
+            allBubble[column, row] = newBubble;
+        }
     }
+
 
     private Vector2 GetPosition(int column, int row)
     {
@@ -89,59 +92,79 @@ private void Setup()
         return new Vector2(x, y);
     }
 
-    
-    
-    private IEnumerator RefillBoardCoroutine() // note all the for loops are reversed rn
+    /*
+    private IEnumerator RefillBoardCoroutine()
     {
-        // Wait for a short delay (optional, for visual effect)
         yield return new WaitForSeconds(2f);
 
-        // Loop through each column
-        for (int columnIndex = width-1; columnIndex >=0; columnIndex--) // Loop over the columns
+        for (int columnIndex = width - 1; columnIndex >= 0; columnIndex--)
         {
-            // Create a list to store the bubbles that need to move down
-            List<GameObject> bubblesToMove = new List<GameObject>();
+            int emptySlotCount = 0;
 
-            // Loop through each row from bottom to top
-            for (int rowIndex = height-1; rowIndex >=0; rowIndex--) // Loop over the rows
+            for (int rowIndex = 0; rowIndex < height; rowIndex++)
             {
-                // Check if the current slot is empty
                 if (allBubble[columnIndex, rowIndex] == null)
                 {
-                    // Add the bubbles above the empty slot to the list
-                    for (int i = columnIndex; i >=0; i--)
+                    emptySlotCount++;
+                }
+                else if (emptySlotCount > 0)
+                {
+                    GameObject bubble = allBubble[columnIndex, rowIndex];
+                    allBubble[columnIndex, rowIndex] = null;
+                    allBubble[columnIndex, rowIndex - emptySlotCount] = bubble;
+                    bubble.transform.position = GetPosition(columnIndex, rowIndex - emptySlotCount);
+                }
+            }
+
+            for (int i = 0; i < emptySlotCount; i++)
+            {
+                yield return new WaitForSeconds(0f);
+                RefillSlot(columnIndex, height - 1 - i);
+            }
+        }
+
+        yield return new WaitForSeconds(0.5f);
+
+        // Enable player input or perform other necessary actions
+    }
+    */
+
+    // rewriting refill board co to deal with bubbles breaking in multiple columns
+    private IEnumerator RefillBoardCoroutine()
+    {
+        yield return new WaitForSeconds(2f);
+
+        for (int columnIndex = 0; columnIndex < width; columnIndex++)
+        {
+            int emptySlotCount = 0;
+
+            for (int rowIndex = 0; rowIndex < height; rowIndex++)
+            {
+                if (allBubble[columnIndex, rowIndex] == null)
+                {
+                    emptySlotCount++;
+                }
+                else if (emptySlotCount > 0)
+                {
+                    GameObject bubble = allBubble[columnIndex, rowIndex];
+                    allBubble[columnIndex, rowIndex] = null;
+                    allBubble[columnIndex, rowIndex - emptySlotCount] = bubble;
+
+                    if (bubble != null)
                     {
-                        GameObject bubble = allBubble[columnIndex, i];
-                        if (bubble != null)
-                        {
-                            bubblesToMove.Add(bubble);
-                            allBubble[columnIndex, i] = null;
-                        }
+                        bubble.transform.position = GetPosition(columnIndex, rowIndex - emptySlotCount);
                     }
                 }
             }
 
-            // Move the bubbles down
-            for (int i = bubblesToMove.Count-1; i >=0; i--)
+            for (int i = height - emptySlotCount; i < height; i++)
             {
-                int targetRow = height-1-i; // Calculate the target row correctly
-                allBubble[columnIndex, targetRow] = bubblesToMove[i];
-                bubblesToMove[i].transform.position = GetPosition(columnIndex, targetRow);
-            }
-
-            // Refill the remaining empty slots with new bubbles
-            for (int rowIndex = height-1; rowIndex >=0; rowIndex--) // Loop over the rows
-            {
-                if (allBubble[columnIndex, rowIndex] == null)
-                {
-                    yield return new WaitForSeconds(0.5f); // keep this to check how the board is being refilled
-                    RefillSlot(columnIndex, rowIndex);
-                }
+                yield return new WaitForSeconds(0.5f);
+                RefillSlot(columnIndex, i);
             }
         }
 
-        // Optional: Wait for a short delay before enabling player input
-        yield return new WaitForSeconds(2f);
+        yield return new WaitForSeconds(0f);
 
         // Enable player input or perform other necessary actions
     }
