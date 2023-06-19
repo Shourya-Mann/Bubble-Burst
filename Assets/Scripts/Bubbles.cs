@@ -1,6 +1,8 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using Interhaptics.Core;
+
 
 public class Bubbles : MonoBehaviour
 {
@@ -76,6 +78,7 @@ public class Bubbles : MonoBehaviour
         {
             board.BreakBubble(firstTouchPos.x, firstTouchPos.y);
             
+
         }
         else
         {
